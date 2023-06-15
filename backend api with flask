@@ -1,0 +1,20 @@
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+
+app.post('/api/endpoint', (req, res) => {
+  // Get the JSON payload from the request
+  const data = req.body;
+
+  // Process the data (you can customize this according to your needs)
+  const processedData = { result: data.value * 2 };
+
+  // Return the processed data as a JSON response
+  res.json(processedData);
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
