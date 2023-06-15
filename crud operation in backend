@@ -1,0 +1,74 @@
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+
+// Mock data for books
+let books = [
+  { id: 1, title: 'Book 1', author: 'Author 1' },
+  { id: 2, title: 'Book 2', author: 'Author 2' },
+  { id: 3, title: 'Book 3', author: 'Author 3' }
+];
+
+// Get all books
+app.get('/api/books', (req, res) => {
+  res.json(books);
+});
+
+// Get a specific book by ID
+app.get('/api/books/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const book = books.find(b => b.id === id);
+
+  if (!book) {
+    return res.status(404).json({ error: 'Book not found' });
+  }
+
+  res.json(book);
+});
+
+// Add a new book
+app.post('/api/books', (req, res) => {
+  const { title, author } = req.body;
+  const id = books.length + 1;
+  const newBook = { id, title, author };
+
+  books.push(newBook);
+
+  res.status(201).json(newBook);
+});
+
+// Update a book by ID
+app.put('/api/books/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const { title, author } = req.body;
+  const bookIndex = books.findIndex(b => b.id === id);
+
+  if (bookIndex === -1) {
+    return res.status(404).json({ error: 'Book not found' });
+  }
+
+  const updatedBook = { id, title, author };
+  books[bookIndex] = updatedBook;
+
+  res.json(updatedBook);
+});
+
+// Delete a book by ID
+app.delete('/api/books/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const bookIndex = books.findIndex(b => b.id === id);
+
+  if (bookIndex === -1) {
+    return res.status(404).json({ error: 'Book not found' });
+  }
+
+  const deletedBook = books.splice(bookIndex, 1)[0];
+
+  res.json(deletedBook);
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
